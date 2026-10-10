@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #17233d;
+            color: white;
+            text-align: center;
+        }
+
+        .box {
+            background: #293958;
+            margin: 30px auto;
+            padding: 25px;
+            width: 80%;
+            border-radius: 15px;
+        }
+
+        input {
+            padding: 12px;
+            width: 200px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .temp {
+            font-size: 60px;
+        }
+
+        .info {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .card {
+            background: #344563;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🌤️ Weather Dashboard</h1>
+
+<!-- SEARCH -->
+<input type="text" id="city" placeholder="Enter city">
+<button onclick="getWeather()">Search</button>
+
+<div class="box">
+
+    <h2>📍 <span id="cityName">Hyderabad</span></h2>
+
+    <div class="temp" id="temp">--°C</div>
+
+    <h2 id="condition">Loading...</h2>
+
+    <div class="info">
+        <div class="card">
+            💨 Wind<br>
+            <b id="wind">--</b> km/h
+        </div>
+
+        <div class="card">
+            💧 Humidity<br>
+            <b id="humidity">--</b>%
+        </div>
+    </div>
+
+</div>
+
+<h2>Forecast</h2>
+
+<div class="info">
+    <div class="card">Today<br>🌤️</div>
+    <div class="card">Tomorrow<br>☀️</div>
+    <div class="card">Day 3<br>☁️</div>
+</div>
+
+
+<script>
+
+function getWeather() {
+
+    let city = document.getElementById("city").value;
+
+    if (city == "") {
+        city = "Hyderabad";
+    }
+
+    // Find city latitude and longitude
+    fetch("https://geocoding-api.open-meteo.com/v1/search?name=" 
+          + city + "&count=1")
+
+    .then(response => response.json())
+
+    .then(place => {
+
+        let latitude = place.results[0].latitude;
+        let longitude = place.results[0].longitude;
+        let name = place.results[0].name;
+
+        document.getElementById("cityName").innerHTML = name;
+
+        // Get weather
+        fetch("https://api.open-meteo.com/v1/forecast?latitude="
+            + latitude
+            + "&longitude="
+            + longitude
+            + "&current=temperature_2m,relative_humidity_2m,wind_speed_10m")
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            document.getElementById("temp").innerHTML =
+                data.current.temperature_2m + "°C";
+
+            document.getElementById("wind").innerHTML =
+                data.current.wind_speed_10m;
+
+            document.getElementById("humidity").innerHTML =
+                data.current.relative_humidity_2m;
+
+            document.getElementById("condition").innerHTML =
+                "Weather Today 🌤️";
+
+        });
+
+    });
+}
+
+// Show Hyderabad when page opens
+getWeather();
+
+</script>
+
+</body>
+</html>
