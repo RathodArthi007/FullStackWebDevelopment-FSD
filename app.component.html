@@ -1,0 +1,60 @@
+
+<div class="container">
+  <form [formGroup]="contactForm"
+        (ngSubmit)="onSubmit()">
+
+    <h2>Contact Us</h2>
+    <p>We would love to hear from you!</p>
+
+    <label>Full Name</label>
+    <input type="text"
+           formControlName="name"
+           placeholder="Enter your name">
+
+    <div class="error"
+      *ngIf="contactForm.controls.name.touched &&
+             contactForm.controls.name.invalid">
+      Name is required.
+    </div>
+
+    <label>Email Address</label>
+    <input type="text"
+           formControlName="email"
+           placeholder="Enter your email">
+
+    <div class="error"
+      *ngIf="contactForm.controls.email.touched &&
+             contactForm.controls.email.hasError('required')">
+      Email is required.
+    </div>
+
+    <div class="error"
+      *ngIf="contactForm.controls.email.touched &&
+             contactForm.controls.email.hasError('email')">
+      Enter a valid email address.
+    </div>
+
+    <label>Message</label>
+    <textarea formControlName="message"
+              placeholder="Write your message"></textarea>
+
+    <div class="error"
+      *ngIf="contactForm.controls.message.touched &&
+             contactForm.controls.message.hasError('required')">
+      Message is required.
+    </div>
+
+    <div class="error"
+      *ngIf="contactForm.controls.message.touched &&
+             contactForm.controls.message.hasError('minlength')">
+      Message must contain at least 10 characters.
+    </div>
+
+    <button type="submit">Submit</button>
+
+    <p class="success" *ngIf="successMessage">
+      {{ successMessage }}
+    </p>
+
+  </form>
+</div>
